@@ -12,7 +12,7 @@ class LocalStorage {
 
   get(key) {
     this.init()
-    return JSON.parse(this.data[key] || '[]')
+    return this.data[key] || []
   }
 
   set(key, value) {
