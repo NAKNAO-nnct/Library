@@ -3,7 +3,7 @@ class LocalStorage {
     this.data = {}
   }
 
-  init() {
+  refresh() {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
       this.data[key] = JSON.parse(localStorage.getItem(key)) || []
@@ -11,7 +11,7 @@ class LocalStorage {
   }
 
   get(key) {
-    this.init()
+    this.refresh()
     return this.data[key] || []
   }
 
@@ -28,7 +28,7 @@ class LocalStorage {
   }
 
   all() {
-    this.init()
+    this.refresh()
     return this.data
   }
 }
