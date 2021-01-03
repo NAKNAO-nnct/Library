@@ -12,8 +12,8 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - src',
-    title: 'src',
+    titleTemplate: '',
+    title: '蔵書リスト',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -26,7 +26,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: ['~/plugins/axios', '~/lib/config'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -45,6 +45,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/dotenv',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
