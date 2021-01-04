@@ -1,10 +1,14 @@
 <template>
   <v-expansion-panels>
     <v-expansion-panel>
-      <v-expansion-panel-header> ストレージクリア </v-expansion-panel-header>
+      <v-expansion-panel-header>
+        <span> <v-icon>mdi-database-outline</v-icon> ストレージ </span>
+      </v-expansion-panel-header>
       <v-expansion-panel-content>
         LocalStorageのデータをクリアします。
-        <v-btn block @click="clearStorage"> データクリア </v-btn>
+        <v-btn block @click="clearStorage">
+          LocalStorageのデータをクリア
+        </v-btn>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
