@@ -34,6 +34,11 @@ class BookManager {
     return flg
   }
 
+  clear() {
+    this.book = undefined
+    this.footer = undefined
+  }
+
   async getFolderListForId(fid) {
     return await this.init().then(() => {
       return this.footer.data.filter((e) => e.parent_id === fid)

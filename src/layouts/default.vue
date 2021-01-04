@@ -59,6 +59,11 @@ export default {
           title: 'Explore',
           to: '/folder/-1',
         },
+        {
+          icon: 'mdi-tune',
+          title: '設定',
+          to: '/setting',
+        },
       ],
       miniVariant: false,
       title: '蔵書',
