@@ -45,19 +45,14 @@ export default {
   },
   data() {
     return {
-      test: 'hoe',
       search: '',
       headers: [
         {
-          text: 'id',
-          value: '_id',
-        },
-        {
-          text: 'title',
+          text: 'タイトル',
           value: 'title',
         },
         {
-          text: 'isbn',
+          text: 'ISBN',
           value: 'isbn',
         },
       ],
