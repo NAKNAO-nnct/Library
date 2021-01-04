@@ -23,7 +23,7 @@
         <v-list-item
           v-for="(item, i) in books"
           :key="i"
-          :href="`/book/${item.isbn}`"
+          :to="`/book/${item.isbn}`"
         >
           <v-list-item-icon>
             <v-icon>mdi-book-open-page-variant-outline</v-icon>
