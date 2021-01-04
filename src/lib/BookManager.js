@@ -8,10 +8,12 @@ class BookManager {
     this.book = new Api('')
   }
 
+  // 木構造初期化
   initTree() {
     this.tree = []
   }
 
+  // 初期化
   async init() {
     let flg = 0
     if (LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY).length === 0) {
@@ -43,18 +45,21 @@ class BookManager {
     this.folder = undefined
   }
 
+  // フォルダIDからフォルダリストを取得する
   async getFolderListForId(fid) {
     return await this.init().then(() => {
       return this.folder.data.filter((e) => e.parent_id === fid)
     })
   }
 
+  // フォルダIDから本リストを取得する
   async getBookListForId(fid) {
     return await this.init().then(() => {
       return this.list.data.filter((e) => e.parent_id === fid)
     })
   }
 
+  // フォルダIDから階層を探る
   getFolderListForIdSync(fid) {
     if (fid === '-1') {
       this.tree.push({
