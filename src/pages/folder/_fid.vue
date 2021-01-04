@@ -1,5 +1,10 @@
 <template>
   <v-card tile>
+    <v-breadcrumbs :items="tree">
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
+      </template>
+    </v-breadcrumbs>
     <v-list class="v-list">
       <v-list-item-group>
         <v-list-item
@@ -49,7 +54,8 @@ export default {
   async asyncData({ params }) {
     const folders = await BookManage.getFolderListForId(params.fid)
     const books = await BookManage.getBookListForId(params.fid)
-    return { folders, books }
+    const tree = BookManage.getTreeStructure(params.fid)
+    return { folders, books, tree }
   },
 }
 </script>

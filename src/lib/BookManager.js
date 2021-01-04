@@ -8,6 +8,10 @@ class BookManager {
     this.book = new Api('')
   }
 
+  initTree() {
+    this.tree = []
+  }
+
   async init() {
     let flg = 0
     if (LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY).length === 0) {
@@ -49,6 +53,31 @@ class BookManager {
     return await this.init().then(() => {
       return this.list.data.filter((e) => e.parent_id === fid)
     })
+  }
+
+  getFolderListForIdSync(fid) {
+    if (fid === '-1') {
+      this.tree.push({
+        text: 'トップ',
+        to: '/folder/-1',
+        disabled: this.tree.length === 0,
+      })
+      return fid
+    }
+    const tmpFolder = this.folder.data.filter((e) => e._id === fid)[0]
+    this.tree.push({
+      text: tmpFolder.name,
+      to: '/folder/' + tmpFolder._id,
+      disabled: this.tree.length === 0,
+    })
+    return this.getFolderListForIdSync(tmpFolder.parent_id)
+  }
+
+  getTreeStructure(fid) {
+    this.initTree()
+    if (this.getFolderListForIdSync(fid) === '-1') {
+      return this.tree.reverse()
+    }
   }
 }
 
