@@ -23,12 +23,12 @@ class BookManager {
 
     if (LocalStorage.get(conf.LOCALSTORAGE_FOLDERLIST_KEY).length === 0) {
       await this.book.get('/dat_folder.csv').then((response) => {
-        this.footer = new Tsv(response.data)
-        LocalStorage.set(conf.LOCALSTORAGE_FOLDERLIST_KEY, this.footer)
+        this.folder = new Tsv(response.data)
+        LocalStorage.set(conf.LOCALSTORAGE_FOLDERLIST_KEY, this.folder)
         flg += 1
       })
     } else {
-      this.footer = LocalStorage.get(conf.LOCALSTORAGE_FOLDERLIST_KEY)
+      this.folder = LocalStorage.get(conf.LOCALSTORAGE_FOLDERLIST_KEY)
       flg += 1
     }
     return flg
@@ -36,12 +36,12 @@ class BookManager {
 
   clear() {
     this.book = undefined
-    this.footer = undefined
+    this.folder = undefined
   }
 
   async getFolderListForId(fid) {
     return await this.init().then(() => {
-      return this.footer.data.filter((e) => e.parent_id === fid)
+      return this.folder.data.filter((e) => e.parent_id === fid)
     })
   }
 
