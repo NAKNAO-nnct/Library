@@ -33,15 +33,10 @@ import conf from '~/lib/config'
 
 export default {
   async asyncData() {
-    if (LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY).length === 0) {
-      return {
-        items: await BookManage.init().then((reseponse) => {
-          return BookManage.list
-        }),
-      }
-    } else {
-      return { items: LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY) }
-    }
+    const items = await BookManage.init().then(() => {
+      return LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY)
+    })
+    return { items }
   },
   data() {
     return {
