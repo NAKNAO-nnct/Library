@@ -41,8 +41,8 @@ class BookManager {
   }
 
   clear() {
-    this.book = undefined
-    this.folder = undefined
+    this.list = {}
+    this.folder = {}
   }
 
   // フォルダIDからフォルダリストを取得する
