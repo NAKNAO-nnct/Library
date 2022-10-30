@@ -8,6 +8,7 @@ export default class ApiUtils {
   }
 
   get(path, params = {}) {
+    params._ = Date.now()
     return this.consols.get(path, { params })
   }
 
