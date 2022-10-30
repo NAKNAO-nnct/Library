@@ -1,6 +1,6 @@
-import OpenBD from './OpenBDApi'
-import BookManage from './BookManager'
+// import OpenBD from './OpenBDApi'
+// import BookManage from './BookManager'
 
-class BookInfo {
-  constructor() {}
-}
+// class BookInfo {
+//   constructor() {}
+// }
