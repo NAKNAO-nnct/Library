@@ -16,7 +16,7 @@
                 }}
               </v-card-title>
               <v-card-subtitle>{{ book.summary.author }}</v-card-subtitle>
-              <v-card-text> </v-card-text>
+              <v-card-text>{{ book.summary.publisher ?? '' }}</v-card-text>
             </v-col>
           </v-row>
         </v-container>
@@ -32,7 +32,10 @@ import BookApi from '~/lib/OpenBDApi'
 export default {
   async asyncData({ params }) {
     const books = await BookApi.getBookData(params.isbn).then((res) => {
-      return BookApi.formatData(res.data)
+      // OpenBDから取得できない本があるため古い駆ける
+      const apiBooks = res.data.filter((book) => book != null)
+
+      return BookApi.formatData(apiBooks)
     })
     return { books }
   },
