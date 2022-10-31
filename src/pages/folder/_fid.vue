@@ -9,7 +9,7 @@
       <v-list-item-group>
         <v-list-item
           v-for="(item, i) in folders"
-          :key="i"
+          :key="'folder_' + i"
           :to="`/folder/${item._id}`"
           class="tile"
         >
@@ -22,7 +22,7 @@
         </v-list-item>
         <v-list-item
           v-for="(item, i) in books"
-          :key="i"
+          :key="'book_' + i"
           :to="`/book/${item.isbn}`"
         >
           <v-list-item-icon>
@@ -52,8 +52,16 @@ import BookManage from '~/lib/BookManager'
 
 export default {
   async asyncData({ params }) {
-    const folders = await BookManage.getFolderListForId(params.fid)
-    const books = await BookManage.getBookListForId(params.fid)
+    // nameでソート
+    let folders = await BookManage.getFolderListForId(params.fid)
+    folders = folders.sort(function (a, b) {
+      return a.name < b.name ? -1 : 1
+    })
+    // ISBNでソート
+    let books = await BookManage.getBookListForId(params.fid)
+    books = books.sort(function (a, b) {
+      return a.ibsn < b.ibsn ? -1 : 1
+    })
     const tree = BookManage.getTreeStructure(params.fid)
     return { folders, books, tree }
   },
