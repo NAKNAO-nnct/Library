@@ -7,7 +7,7 @@
           <v-spacer></v-spacer>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="検索" single-line hide-details></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="items.data" :search="search" :options="option">
+        <v-data-table :headers="headers" :items="items.data" :search="search" :items-per-page="-1" :expanded.sync="expanded" class="elevation-1">
           <template v-slot:[`item.isbn`]="{ item }">
             <a :href="`/book/${item.isbn}`"> {{ item.isbn }} </a>
           </template>
@@ -35,10 +35,27 @@ export default {
   data() {
     return {
       search: '',
+      expanded: [],
       headers: [
         {
           text: 'タイトル',
           value: 'title',
+        },
+        {
+          text: '著者',
+          value: 'author',
+        },
+        {
+          text: '出版社',
+          value: 'publisher',
+        },
+        {
+          text: '発売日',
+          value: 'sales_date',
+        },
+        {
+          text: 'タイプ',
+          value: 'size',
         },
         {
           text: 'ISBN',
@@ -50,7 +67,6 @@ export default {
         data: [],
         head: [],
       },
-      option: {},
     }
   },
 }
