@@ -7,12 +7,7 @@
     </v-breadcrumbs>
     <v-list class="v-list">
       <v-list-item-group>
-        <v-list-item
-          v-for="(item, i) in folders"
-          :key="'folder_' + i"
-          :to="`/folder/${item._id}`"
-          class="tile"
-        >
+        <v-list-item v-for="(item, i) in folders" :key="'folder_' + i" :to="`/folder/${item._id}`" class="tile">
           <v-list-item-icon>
             <v-icon color="info">mdi-folder-open</v-icon>
           </v-list-item-icon>
@@ -20,11 +15,7 @@
             <v-list-item-title v-text="item.name"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item
-          v-for="(item, i) in books"
-          :key="'book_' + i"
-          :to="`/book/${item.isbn}`"
-        >
+        <v-list-item v-for="(item, i) in books" :key="'book_' + i" :to="`/book/${item.isbn}`">
           <v-list-item-icon>
             <v-icon>mdi-book-open-page-variant-outline</v-icon>
           </v-list-item-icon>

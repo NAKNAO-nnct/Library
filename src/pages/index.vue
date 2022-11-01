@@ -5,15 +5,9 @@
         <v-card-title>
           蔵書一覧
           <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="検索"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="検索" single-line hide-details></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="items.data" :search="search">
+        <v-data-table :headers="headers" :items="items.data" :search="search" :options="option">
           <template v-slot:[`item.isbn`]="{ item }">
             <a :href="`/book/${item.isbn}`"> {{ item.isbn }} </a>
           </template>
@@ -56,6 +50,7 @@ export default {
         data: [],
         head: [],
       },
+      option: {},
     }
   },
 }

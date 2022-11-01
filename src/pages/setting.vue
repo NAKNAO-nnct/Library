@@ -6,9 +6,7 @@
       </v-expansion-panel-header>
       <v-expansion-panel-content>
         LocalStorageのデータをクリアします。
-        <v-btn block @click="clearStorage">
-          LocalStorageのデータをクリア
-        </v-btn>
+        <v-btn block @click="clearStorage"> LocalStorageのデータをクリア </v-btn>
       </v-expansion-panel-content>
     </v-expansion-panel>
 

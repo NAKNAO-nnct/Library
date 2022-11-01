@@ -15,12 +15,7 @@ class OpenBb {
     for (let i = 0; i < data.length; i++) {
       const isbn = data[i].summary.isbn
       if (data[i].summary.cover === '') {
-        data[i].summary.cover =
-          'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/' +
-          isbn.slice(-4) +
-          '/' +
-          isbn +
-          '.jpg'
+        data[i].summary.cover = 'https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/' + isbn.slice(-4) + '/' + isbn + '.jpg'
       }
     }
     return data

@@ -10,10 +10,7 @@
             <v-col cols="8">
               <v-card-title>
                 {{ book.summary.title }} &emsp;
-                {{
-                  book.onix.DescriptiveDetail.TitleDetail.TitleElement
-                    .PartNumber
-                }}
+                {{ book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber }}
               </v-card-title>
               <v-card-subtitle>{{ book.summary.author }}</v-card-subtitle>
               <v-card-text>{{ book.summary.publisher ?? '' }}</v-card-text>
