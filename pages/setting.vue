@@ -6,7 +6,8 @@
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         LocalStorageのデータをクリアします。
-        <v-btn block @click="clearStorage"> LocalStorageのデータをクリア </v-btn>
+        <v-btn block :disabled="reloading" @click="clearStorage"> LocalStorageのデータをクリア </v-btn>
+        <p v-if="clearError" role="alert">{{ clearError }}</p>
       </v-expansion-panel-text>
     </v-expansion-panel>
 
@@ -28,11 +29,16 @@ import BookManage from '~/lib/BookManager'
 
 export default {
   data() {
-    return { reloading: false, reloadError: '' }
+    return { reloading: false, reloadError: '', clearError: '' }
   },
   methods: {
     clearStorage() {
-      BookManage.clearStorage()
+      this.clearError = ''
+      try {
+        BookManage.clearStorage()
+      } catch {
+        this.clearError = '保存データを削除できませんでした。ブラウザのストレージ設定を確認してください。'
+      }
     },
     async reload() {
       this.reloading = true

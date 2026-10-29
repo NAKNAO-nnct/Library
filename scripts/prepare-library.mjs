@@ -3,20 +3,10 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import Tsv from '../lib/Tsv.js'
+import { DATA_FILES, MANIFEST_SCHEMA_VERSION, contentHash, cacheHash, validateLibrary } from '../lib/LibraryData.js'
 
 const rootDirectory = fileURLToPath(new URL('../', import.meta.url))
-const filenames = ['dat_product.csv', 'dat_folder.csv']
-
-function validateTable(table, required, filename) {
-  for (const field of required) {
-    if (!table.header.includes(field)) throw new Error(`${filename}: 必須列 ${field} がありません`)
-  }
-  const ids = new Set()
-  for (const row of table.data) {
-    if (!row._id || ids.has(row._id)) throw new Error(`${filename}: IDが空、または重複しています: ${row._id}`)
-    ids.add(row._id)
-  }
-}
+const filenames = Object.values(DATA_FILES)
 
 export function createLibraryManifest(files) {
   const tables = {}
@@ -26,24 +16,16 @@ export function createLibraryManifest(files) {
   }
   const books = tables['dat_product.csv']
   const folders = tables['dat_folder.csv']
-  validateTable(books, ['_id', 'parent_id', 'title', 'isbn', 'author', 'publisher'], 'dat_product.csv')
-  validateTable(folders, ['_id', 'parent_id', 'name'], 'dat_folder.csv')
-  const folderMap = new Map(folders.data.map((folder) => [folder._id, folder]))
-  for (const row of [...books.data, ...folders.data]) {
-    if (row.parent_id !== '-1' && !folderMap.has(row.parent_id)) throw new Error(`親フォルダ ${row.parent_id} がありません`)
-  }
-  for (const folder of folders.data) {
-    const visited = new Set()
-    let id = folder._id
-    while (id !== '-1') {
-      if (visited.has(id)) throw new Error(`フォルダ階層が循環しています: ${id}`)
-      visited.add(id)
-      id = folderMap.get(id).parent_id
-    }
-  }
+  validateLibrary(books, folders)
   const hash = createHash('sha256')
   for (const name of filenames) hash.update(name).update(files[name])
-  return { version: hash.digest('hex'), bookCount: books.data.length, folderCount: folders.data.length }
+  return {
+    schemaVersion: MANIFEST_SCHEMA_VERSION,
+    version: hash.digest('hex'),
+    bookCount: books.data.length,
+    folderCount: folders.data.length,
+    files: Object.fromEntries(filenames.map((name) => [name, { sha256: contentHash(files[name]), cacheHash: cacheHash(tables[name]) }])),
+  }
 }
 
 export async function prepareLibrary(root = rootDirectory) {

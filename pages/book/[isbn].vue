@@ -33,10 +33,12 @@
 import BookApi from '~/lib/OpenBDApi'
 import BookManage from '~/lib/BookManager'
 import { mergeBookDetails } from '~/lib/BookDetails'
+import { parseIsbnList } from '~/lib/Routes'
 
 definePageMeta({ key: (route) => route.fullPath })
 const route = useRoute()
-const isbns = String(route.params.isbn).split(',').filter(Boolean)
+const isbns = parseIsbnList(route.params.isbn)
+if (!isbns) throw createError({ statusCode: 400, statusMessage: 'Invalid ISBN' })
 await BookManage.init()
 const localBooks = BookManage.list.data
 const local = new Map(localBooks.map((book) => [book.isbn, book]))
@@ -46,14 +48,17 @@ const missingCovers = isbns.filter((isbn) => {
 })
 const books = ref(mergeBookDetails(isbns, localBooks))
 const loadingSupplement = ref(missingCovers.length > 0)
+const controller = new AbortController()
+onBeforeUnmount(() => controller.abort())
 onMounted(async () => {
   if (!missingCovers.length) return
   try {
-    const response = await BookApi.getBookData(missingCovers.join(','))
-    const apiBooks = BookApi.formatData(response.data.filter((book) => book?.summary))
+    const response = await BookApi.getBookData(missingCovers.join(','), { signal: controller.signal })
+    if (controller.signal.aborted) return
+    const apiBooks = BookApi.formatData(response.data)
     books.value = mergeBookDetails(isbns, localBooks, apiBooks)
   } catch (error) {
-    console.warn('OpenBDから補足情報を取得できないため、元データを表示します。', error)
+    if (!controller.signal.aborted) console.warn('OpenBDから補足情報を取得できないため、元データを表示します。', error)
   } finally {
     loadingSupplement.value = false
   }

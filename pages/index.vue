@@ -8,16 +8,16 @@
           <v-text-field v-model="search" append-inner-icon="mdi-magnify" label="検索" single-line hide-details />
         </v-card-title>
         <v-data-table
-          v-model:expanded="expanded"
           :headers="headers"
           :items="items.data"
           :search="search"
-          :items-per-page="-1"
+          :items-per-page="50"
+          :items-per-page-options="[25, 50, 100]"
           class="elevation-1"
           item-value="_id"
         >
           <template #[`item.isbn`]="{ item }">
-            <a :href="`/book/${item.isbn}`"> {{ item.isbn }} </a>
+            <NuxtLink :to="`/book/${item.isbn}`">{{ item.isbn }}</NuxtLink>
           </template>
         </v-data-table>
       </v-col>
@@ -29,7 +29,6 @@
 import BookManage from '~/lib/BookManager'
 
 const search = ref('')
-const expanded = ref([])
 const headers = [
   { title: 'タイトル', key: 'title' },
   { title: '著者', key: 'author' },

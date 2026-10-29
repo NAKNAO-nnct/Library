@@ -1,5 +1,16 @@
 {
+  "schemaVersion": 2,
   "version": "a6d746770cfc5460d53085cdb8b62dfe86d069b91b738aa318bd7b2f5b92a800",
   "bookCount": 1805,
-  "folderCount": 264
+  "folderCount": 264,
+  "files": {
+    "dat_product.csv": {
+      "sha256": "aef4b77e28a85c609f4d798ba01462bb5c91e1464d3d94420595fa2eb54fc5d6",
+      "cacheHash": "33f97e3dc223a6fe88e5ca20d89b5ffb1fbb2c52471218d57a70666bb209ec9d"
+    },
+    "dat_folder.csv": {
+      "sha256": "f61e3954c1c9e82c8c7a80ccc1b5ae792c706610f629ac82285f5830945b5fd5",
+      "cacheHash": "22919410a6255b6fd3bb5071cc040208ca4abf7b1c3c6b43c2d4f76ff4f33d6d"
+    }
+  }
 }
