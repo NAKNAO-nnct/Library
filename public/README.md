@@ -2,4 +2,6 @@
 
 このディレクトリのファイルはURLのルートから配信します。
 `dat_product.csv`と`dat_folder.csv`はタブ区切りの蔵書・フォルダデータです。
-これらと`library-data.json`は、ルートの`蔵書マネージャー.zip`から`npm run data:import`で生成します。直接編集せず、ZIPを差し替えて再生成してください。
+この2ファイルを直接配置・上書きしてください。ZIPと旧形式の`dat_book.csv`は不要です。
+
+`library-data.json`は起動・ビルド前、または`npm run data:prepare`で自動生成します。CSV自体は書き換えません。

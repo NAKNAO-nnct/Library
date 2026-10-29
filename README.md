@@ -35,27 +35,28 @@ npm run start
 - `layouts/`: 共通レイアウト
 - `plugins/`: VuetifyとNuxt注入用Axios
 - `lib/`: 蔵書読込、LocalStorage、OpenBD連携
-- `scripts/`: ZIPからのデータ取込
+- `scripts/`: CSV検証・データ更新情報の生成
 - `public/`: 静的アセットと蔵書・フォルダデータ
 - `nuxt.config.js`: SPA・画面・ビルド設定
 
 ## 元データの更新
 
-ルートの`蔵書マネージャー.zip`を元データとして管理します。ZIPの中のファイルはUTF-8のタブ区切りです。
+蔵書マネージャーから出力したファイルを、次の場所に直接配置・上書きしてください。UTF-8のタブ区切りデータを使用します。
 
-- `dat_product.csv`: 蔵書データ。旧`dat_book.csv`の全書籍と追加分、表紙URLなどを含みます。
-- `dat_folder.csv`: フォルダデータ。
-- `dat_book.csv`: 旧形式のデータ。取込には使用しません。
+- `public/dat_product.csv`: 蔵書データ。
+- `public/dat_folder.csv`: フォルダデータ。
 
-ZIPを差し替えた後は`npm run dev`を再起動するか、`npm run build` / `npm run generate`を実行してください。これらのコマンドは起動・ビルド前にZIPを検証し、`public/dat_product.csv`、`public/dat_folder.csv`、`public/library-data.json`を自動生成します。生成したファイルを直接編集しないでください。
+ZIPは配置不要です。旧形式の`dat_book.csv`も使用しません。
 
-取込だけを実行する場合は次のコマンドを使います。
+CSVを差し替えた後は`npm run dev`を再起動するか、`npm run build` / `npm run generate`を実行してください。配置したCSVを検証し、キャッシュ更新用の`public/library-data.json`を自動生成します。CSV自体は書き換えません。
+
+開発サーバーの起動中など、更新情報の生成だけを実行する場合は次のコマンドを使い、その後ブラウザを再読込してください。
 
 ```sh
-npm run data:import
+npm run data:prepare
 ```
 
-必須列・IDの重複・フォルダ参照・階層の循環を検証し、不正な場合は取込を中断します。macOSの濁点分離を含むZIPファイル名にも対応します。
+必須列・IDの重複・フォルダ参照・階層の循環を検証し、不正な場合は起動・ビルドを中断します。`library-data.json`は自動生成されるため、直接編集する必要はありません。
 
 ブラウザ起動時はデータのハッシュを確認し、更新されていればLocalStorageを置き換えます。保存するのはヘッダーと行データのみで、列名付きデータとの重複保存を避けています。設定画面の「リロード」でも配信中のデータを再取得できます。
 

@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto'
-import { readFile, readdir, mkdir, writeFile, rm } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { unzipSync } from 'fflate'
 import Tsv from '../lib/Tsv.js'
 
 const rootDirectory = fileURLToPath(new URL('../', import.meta.url))
@@ -19,12 +18,10 @@ function validateTable(table, required, filename) {
   }
 }
 
-export function readLibraryArchive(bytes) {
-  // Extract only the two known data files; never use ZIP paths as output paths.
-  const files = unzipSync(bytes, { filter: (entry) => filenames.includes(entry.name) })
+export function createLibraryManifest(files) {
   const tables = {}
   for (const name of filenames) {
-    if (!files[name]) throw new Error(`ZIP内に ${name} がありません`)
+    if (!files[name]) throw new Error(`public/${name} がありません`)
     tables[name] = new Tsv(new TextDecoder('utf-8', { fatal: true }).decode(files[name]))
   }
   const books = tables['dat_product.csv']
@@ -46,23 +43,16 @@ export function readLibraryArchive(bytes) {
   }
   const hash = createHash('sha256')
   for (const name of filenames) hash.update(name).update(files[name])
-  return {
-    files,
-    manifest: { version: hash.digest('hex'), bookCount: books.data.length, folderCount: folders.data.length },
-  }
+  return { version: hash.digest('hex'), bookCount: books.data.length, folderCount: folders.data.length }
 }
 
-export async function importLibrary(root = rootDirectory) {
-  const archives = (await readdir(root)).filter((name) => name.normalize('NFC') === '蔵書マネージャー.zip')
-  if (archives.length !== 1) throw new Error('ルートに「蔵書マネージャー.zip」を1つ置いてください')
-  const { files, manifest } = readLibraryArchive(await readFile(join(root, archives[0])))
-  const output = join(root, 'public')
-  await mkdir(output, { recursive: true })
-  for (const name of filenames) await writeFile(join(output, name), files[name])
-  await writeFile(join(output, 'library-data.json'), JSON.stringify(manifest, null, 2) + '\n')
-  await rm(join(output, 'dat_book.csv'), { force: true })
-  console.log(`蔵書 ${manifest.bookCount}件・フォルダ ${manifest.folderCount}件をZIPから取り込みました。`)
+export async function prepareLibrary(root = rootDirectory) {
+  const source = join(root, 'public')
+  const files = Object.fromEntries(await Promise.all(filenames.map(async (name) => [name, await readFile(join(source, name))])))
+  const manifest = createLibraryManifest(files)
+  await writeFile(join(source, 'library-data.json'), JSON.stringify(manifest, null, 2) + '\n')
+  console.log(`蔵書 ${manifest.bookCount}件・フォルダ ${manifest.folderCount}件を確認しました。`)
   return manifest
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await importLibrary()
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await prepareLibrary()

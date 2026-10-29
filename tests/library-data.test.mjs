@@ -1,11 +1,10 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { mkdtemp, readFile, readdir, writeFile, rm } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { zipSync, strToU8, unzipSync } from 'fflate'
 import Tsv from '../lib/Tsv.js'
-import { readLibraryArchive, importLibrary } from '../scripts/import-library.mjs'
+import { createLibraryManifest, prepareLibrary } from '../scripts/prepare-library.mjs'
 import { BookManager } from '../lib/BookManager.js'
 import LocalStorage from '../lib/LocalStorage.js'
 import { mergeBookDetails } from '../lib/BookDetails.js'
@@ -18,8 +17,8 @@ const config = {
   LOCALSTORAGE_DATAVERSION_KEY: 'version',
 }
 
-function archive(books = bookText, folders = folderText) {
-  return zipSync({ 'dat_product.csv': strToU8(books), 'dat_folder.csv': strToU8(folders) })
+function sourceFiles(books = bookText, folders = folderText) {
+  return { 'dat_product.csv': Buffer.from(books), 'dat_folder.csv': Buffer.from(folders) }
 }
 
 class MemoryStorage {
@@ -60,32 +59,37 @@ test('TSV handles BOM, CRLF, quoted tabs/newlines, final blank lines, and all co
   assert.throws(() => new Tsv('_id\ttitle\n1'), /列数/)
 })
 
-test('import selects dat_product even when dat_book contains older records, and hashes content', () => {
-  const bytes = zipSync({ ...unzipSync(archive()), 'dat_book.csv': strToU8('old data') })
-  const result = readLibraryArchive(bytes)
-  assert.equal(result.manifest.bookCount, 1)
-  assert.equal(result.manifest.folderCount, 1)
-  assert.equal(new TextDecoder().decode(result.files['dat_product.csv']), bookText)
-  assert.equal(result.files['dat_book.csv'], undefined)
-  assert.equal(readLibraryArchive(archive()).manifest.version, result.manifest.version)
-  assert.notEqual(readLibraryArchive(archive(bookText.replace('本1', '本2'))).manifest.version, result.manifest.version)
+test('manifest uses product/folder CSV content and detects edits without a record count change', () => {
+  const result = createLibraryManifest(sourceFiles())
+  assert.equal(result.bookCount, 1)
+  assert.equal(result.folderCount, 1)
+  assert.equal(createLibraryManifest(sourceFiles()).version, result.version)
+  assert.notEqual(createLibraryManifest(sourceFiles(bookText.replace('本1', '本2'))).version, result.version)
+  assert.notEqual(createLibraryManifest(sourceFiles(bookText, folderText.replace('本棚', '新しい棚'))).version, result.version)
 })
 
-test('invalid exports fail before import: required files, IDs, references, and cycles', () => {
-  assert.throws(() => readLibraryArchive(zipSync({})), /dat_product.csv/)
-  assert.throws(() => readLibraryArchive(archive(bookText + bookText.split('\n')[1] + '\n')), /重複/)
-  assert.throws(() => readLibraryArchive(archive(bookText.replace('\t10\t', '\t99\t'))), /親フォルダ/)
-  assert.throws(() => readLibraryArchive(archive(bookText, folderText.replace('10\t-1', '10\t10'))), /循環/)
+test('invalid CSV data is rejected: required files, IDs, references, and cycles', () => {
+  assert.throws(() => createLibraryManifest({}), /dat_product.csv/)
+  assert.throws(() => createLibraryManifest(sourceFiles(bookText + bookText.split('\n')[1] + '\n')), /重複/)
+  assert.throws(() => createLibraryManifest(sourceFiles(bookText.replace('\t10\t', '\t99\t'))), /親フォルダ/)
+  assert.throws(() => createLibraryManifest(sourceFiles(bookText, folderText.replace('10\t-1', '10\t10'))), /循環/)
 })
 
-test('import accepts macOS decomposed filenames and writes only the managed data files', async (t) => {
-  const root = await mkdtemp(join(tmpdir(), 'library-import-'))
+test('preparation reads public CSV files without a ZIP and never overwrites the placed data', async (t) => {
+  const root = await mkdtemp(join(tmpdir(), 'library-prepare-'))
   t.after(() => rm(root, { recursive: true, force: true }))
-  await writeFile(join(root, '蔵書マネージャー.zip'.normalize('NFD')), archive())
-  const result = await importLibrary(root)
+  await mkdir(join(root, 'public'))
+  for (const [name, bytes] of Object.entries(sourceFiles())) await writeFile(join(root, 'public', name), bytes)
+  const result = await prepareLibrary(root)
   assert.equal(await readFile(join(root, 'public/dat_product.csv'), 'utf8'), bookText)
+  assert.equal(await readFile(join(root, 'public/dat_folder.csv'), 'utf8'), folderText)
   assert.equal(JSON.parse(await readFile(join(root, 'public/library-data.json'), 'utf8')).version, result.version)
   assert.deepEqual((await readdir(join(root, 'public'))).sort(), ['dat_folder.csv', 'dat_product.csv', 'library-data.json'])
+  const changedBooks = bookText.replace('本1', '差し替えた本')
+  await writeFile(join(root, 'public/dat_product.csv'), changedBooks)
+  const changed = await prepareLibrary(root)
+  assert.notEqual(changed.version, result.version)
+  assert.equal(await readFile(join(root, 'public/dat_product.csv'), 'utf8'), changedBooks)
 })
 
 test('legacy cache is replaced and concurrent requests share one dataset load', async () => {
