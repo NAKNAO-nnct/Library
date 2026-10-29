@@ -12,7 +12,12 @@
     "lint:js": "eslint .",
     "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
     "lint": "npm run lint:js && npm run lint:style",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "data:import": "node scripts/import-library.mjs",
+    "predev": "npm run data:import",
+    "prebuild": "npm run data:import",
+    "pregenerate": "npm run data:import",
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=24.22.2 <25",
@@ -24,7 +29,8 @@
     "js-cookie": "^3.0.8",
     "nuxt": "^4.6.3",
     "vue": "^3.5.44",
-    "vuetify": "^4.3.1"
+    "vuetify": "^4.3.1",
+    "papaparse": "^5.7.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
@@ -34,7 +40,8 @@
     "postcss-html": "^1.8.0",
     "prettier": "^3.9.10",
     "stylelint": "^17.16.0",
-    "stylelint-config-standard": "^40.0.0"
+    "stylelint-config-standard": "^40.0.0",
+    "fflate": "^0.8.3"
   },
   "volta": {
     "node": "24.22.2",

@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     define: {
       'process.env.LOCALSTORAGE_BOOKLIST_KEY': JSON.stringify(process.env.LOCALSTORAGE_BOOKLIST_KEY ?? 'BookListKey'),
       'process.env.LOCALSTORAGE_FOLDERLIST_KEY': JSON.stringify(process.env.LOCALSTORAGE_FOLDERLIST_KEY ?? 'FolderListKey'),
+      'process.env.LOCALSTORAGE_DATAVERSION_KEY': JSON.stringify(process.env.LOCALSTORAGE_DATAVERSION_KEY ?? 'LibraryDataVersion'),
     },
   },
 })

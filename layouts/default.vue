@@ -22,13 +22,10 @@
 </template>
 
 <script setup>
-import BookManage from '~/lib/BookManager'
-
 const drawer = ref(false)
 const items = [
   { icon: 'mdi-format-list-bulleted', title: '蔵書一覧', to: '/' },
   { icon: 'mdi-file-tree', title: 'Explore', to: '/folder/-1' },
   { icon: 'mdi-tune', title: '設定', to: '/setting' },
 ]
-onMounted(() => BookManage.init())
 </script>

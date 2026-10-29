@@ -15,27 +15,36 @@
         <span> <v-icon>mdi-book-sync-outline</v-icon> 蔵書データ </span>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        蔵書データ(CSV)をロードする。
-        <v-btn block @click="reload"> リロード </v-btn>
+        配信中の蔵書データを再取得します。
+        <v-btn block :loading="reloading" @click="reload"> リロード </v-btn>
+        <p v-if="reloadError" role="alert">{{ reloadError }}</p>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
 
 <script>
-import conf from '~/lib/config'
-import LocalStorage from '~/lib/LocalStorage'
 import BookManage from '~/lib/BookManager'
 
 export default {
+  data() {
+    return { reloading: false, reloadError: '' }
+  },
   methods: {
     clearStorage() {
-      LocalStorage.remove(conf.LOCALSTORAGE_BOOKLIST_KEY)
-      LocalStorage.remove(conf.LOCALSTORAGE_FOLDERLIST_KEY)
-      BookManage.clear()
+      BookManage.clearStorage()
     },
-    reload() {
-      window.location.reload()
+    async reload() {
+      this.reloading = true
+      this.reloadError = ''
+      try {
+        await BookManage.init({ force: true })
+        window.location.reload()
+      } catch {
+        this.reloadError = '蔵書データを再取得できませんでした。接続を確認して再試行してください。'
+      } finally {
+        this.reloading = false
+      }
     },
   },
 }

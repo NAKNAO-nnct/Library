@@ -26,9 +26,7 @@
 </template>
 
 <script setup>
-import LocalStorage from '~/lib/LocalStorage'
 import BookManage from '~/lib/BookManager'
-import conf from '~/lib/config'
 
 const search = ref('')
 const expanded = ref([])
@@ -41,5 +39,5 @@ const headers = [
   { title: 'ISBN', key: 'isbn' },
 ]
 await BookManage.init()
-const items = LocalStorage.get(conf.LOCALSTORAGE_BOOKLIST_KEY)
+const items = BookManage.list
 </script>
