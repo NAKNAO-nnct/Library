@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-for="book in books" :key="book.title">
+    <div v-for="book in books" :key="book.summary.isbn">
       <v-card>
         <v-container>
           <v-row>
             <v-col cols="4">
-              <img :src="book.summary.cover" style="width: 100%" />
+              <img :src="book.summary.cover" style="width: 100%" >
             </v-col>
             <v-col cols="8">
               <v-card-title>
@@ -18,23 +18,16 @@
           </v-row>
         </v-container>
       </v-card>
-      <br />
+      <br >
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import BookApi from '~/lib/OpenBDApi'
 
-export default {
-  async asyncData({ params }) {
-    const books = await BookApi.getBookData(params.isbn).then((res) => {
-      // OpenBDから取得できない本があるため古い駆ける
-      const apiBooks = res.data.filter((book) => book != null)
-
-      return BookApi.formatData(apiBooks)
-    })
-    return { books }
-  },
-}
+definePageMeta({ key: (route) => route.fullPath })
+const route = useRoute()
+const response = await BookApi.getBookData(route.params.isbn)
+const books = BookApi.formatData(response.data.filter((book) => book != null))
 </script>

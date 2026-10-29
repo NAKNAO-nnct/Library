@@ -1,23 +1,23 @@
 <template>
   <v-expansion-panels>
     <v-expansion-panel>
-      <v-expansion-panel-header>
+      <v-expansion-panel-title>
         <span> <v-icon>mdi-database-outline</v-icon> ストレージ </span>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content>
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
         LocalStorageのデータをクリアします。
         <v-btn block @click="clearStorage"> LocalStorageのデータをクリア </v-btn>
-      </v-expansion-panel-content>
+      </v-expansion-panel-text>
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <v-expansion-panel-header>
+      <v-expansion-panel-title>
         <span> <v-icon>mdi-book-sync-outline</v-icon> 蔵書データ </span>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content>
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
         蔵書データ(CSV)をロードする。
         <v-btn block @click="reload"> リロード </v-btn>
-      </v-expansion-panel-content>
+      </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
