@@ -1,4 +1,5 @@
 import { createVuetify } from 'vuetify'
+import { getThemePreference } from '~/lib/ThemePreference'
 import {
   VApp,
   VNavigationDrawer,
@@ -62,8 +63,19 @@ export default defineNuxtPlugin((nuxtApp) => {
         VBtn,
       },
       theme: {
-        defaultTheme: 'dark',
+        defaultTheme: getThemePreference(),
         themes: {
+          light: {
+            dark: false,
+            colors: {
+              primary: '#1976D2',
+              secondary: '#FF8F00',
+              info: '#00897B',
+              warning: '#F9A825',
+              error: '#D32F2F',
+              success: '#2E7D32',
+            },
+          },
           dark: {
             dark: true,
             colors: {

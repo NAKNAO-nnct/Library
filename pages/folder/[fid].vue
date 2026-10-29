@@ -6,7 +6,7 @@
       </template>
     </v-breadcrumbs>
     <v-list class="v-list">
-      <v-list-item v-for="item in folders" :key="'folder_' + item._id" :to="`/folder/${item._id}`" class="tile">
+      <v-list-item v-for="item in folders" :key="'folder_' + item._id" :to="`/folder/${item._id}`" class="bg-surface-light">
         <template #prepend>
           <v-icon color="info">mdi-folder-open</v-icon>
         </template>
@@ -43,10 +43,6 @@ const tree = BookManage.getFolderPath(fid).map((folder, index, path) => ({
 </script>
 
 <style scoped>
-.tile {
-  background-color: rgb(255 255 255 / 10%);
-}
-
 .v-list {
   padding: 0;
 }

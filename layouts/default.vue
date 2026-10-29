@@ -9,6 +9,13 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-app-bar-title>蔵書</v-app-bar-title>
       <v-spacer />
+      <v-btn
+        :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+        :aria-label="themeLabel"
+        :title="themeLabel"
+        :aria-pressed="isDark"
+        @click="toggleTheme"
+      />
     </v-app-bar>
     <v-main>
       <v-container>
@@ -22,6 +29,19 @@
 </template>
 
 <script setup>
+import { useTheme } from 'vuetify'
+import { saveThemePreference } from '~/lib/ThemePreference'
+
+const theme = useTheme()
+const isDark = computed(() => theme.global.current.value.dark)
+const themeLabel = computed(() => (isDark.value ? 'ライトテーマに切り替え' : 'ダークテーマに切り替え'))
+
+async function toggleTheme() {
+  const nextTheme = isDark.value ? 'light' : 'dark'
+  await theme.change(nextTheme)
+  saveThemePreference(nextTheme)
+}
+
 const drawer = ref(false)
 const items = [
   { icon: 'mdi-format-list-bulleted', title: '蔵書一覧', to: '/' },
