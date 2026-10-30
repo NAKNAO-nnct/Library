@@ -1,16 +1,16 @@
 {
   "schemaVersion": 2,
-  "version": "1b5c99c0130bd5fffe397158326e6a4f499a9d14333239796ad6b07c64c8af7d",
+  "version": "e26e946013b39087aa91fd6d7a97adc63bb246b1ec762103fff26fe905688d6f",
   "bookCount": 1805,
-  "folderCount": 293,
+  "folderCount": 452,
   "files": {
     "dat_product.csv": {
-      "sha256": "1aaba1886fcbfe406ac02fa181f8d184ff7c30c888dcae3b009e3814097126e6",
-      "cacheHash": "714e1f899672108e6f1c5f211fe953730b5bd6a6efacdc78974fcbcdb8a19af1"
+      "sha256": "57a1f2f972ea20804d5c30862aae23a8b9225fc4c0ef2cbbc653f59c234c5691",
+      "cacheHash": "112a7a0f270e3fb1f10518ddc89a119584a04f83021afba34f19a2de2db00e2d"
     },
     "dat_folder.csv": {
-      "sha256": "bf188b86ada5b29a0f7b9c978cd6917046acd0bd313a270725da7b9ed75ddafd",
-      "cacheHash": "0d296ec32a404d63cfe8b7f0590391bde9b19693c27b9a3ee79c3d8645aabc9c"
+      "sha256": "9f456fa9afab76d40ca8e9ed2f29550f17bd07ad92054e144468ef74e264171a",
+      "cacheHash": "3a5b5fcafa1e61b8604b990319d9a0f70732261e599fe60d43e1f6d062b6dbb5"
     }
   }
 }
